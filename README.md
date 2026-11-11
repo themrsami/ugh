@@ -11,7 +11,7 @@ English and shows the commands people normally use to fix it.
 
 It works for the errors you keep running into with git, npm, Node,
 Python, pip, Docker, ssh, Postgres, make, curl and the shell itself. It's
-a single binary. It runs offline, needs no account or API key, and
+a single binary for Linux, macOS and Windows. It runs offline, needs no account or API key, and
 answers in a few milliseconds, because there is no model behind it: just a
 library of small rule files, one per error, that anyone can read and fix.
 
@@ -43,9 +43,13 @@ file, so that's where it lives.
 
 ## Install
 
-With the install script (Linux and macOS, x86-64 and ARM):
+Linux and macOS (x86-64 and ARM):
 
     curl -fsSL https://raw.githubusercontent.com/themrsami/ugh/main/install.sh | sh
+
+Windows, in PowerShell (no admin rights needed):
+
+    irm https://raw.githubusercontent.com/themrsami/ugh/main/install.ps1 | iex
 
 With Go:
 
@@ -65,6 +69,12 @@ your last command was:
 
     # fish
     echo 'ugh --init fish | source' >> ~/.config/fish/config.fish
+
+    # PowerShell
+    Add-Content $PROFILE 'ugh.exe --init powershell | Out-String | Invoke-Expression'
+
+Git Bash on Windows uses the bash line. In cmd.exe there is no hook, so
+put ugh in front instead: `ugh npm install`.
 
 Open a new terminal and you're set.
 
@@ -163,7 +173,8 @@ Every rule carries example output that it has to match, and `ugh --check`
 runs them all. A rule also has to beat every other rule on its own
 examples, which stops anybody's `.*error.*` from swallowing the library.
 
-Your rules go in `~/.config/ugh/rules`, work immediately, and take
+Your rules go in `~/.config/ugh/rules` (`ugh --dir` prints the exact
+place on your system), work immediately, and take
 priority over the built-in ones. For errors from your team's internal
 tools, keep the rules in a shared repo and point `UGH_RULES` at it: the
 thing the deploy script throws every other Tuesday finally explains itself.
@@ -199,9 +210,12 @@ ugh reads the output through a pipe, and some programs turn off colours
 and progress bars when they aren't writing to a terminal. Most have a
 flag or environment variable to force them back on.
 
-**Windows?**
-The binary builds, but there are no PowerShell or cmd hooks and the rules
-are written for Unix tools. WSL should be fine. Help is welcome.
+**Does it work on Windows?**
+Yes: PowerShell, Git Bash and cmd.exe, plus WSL. The git, npm, Node,
+Python and Docker rules apply as they are. Some suggested fixes are Unix
+commands (`lsof`, `chmod`) that only make sense in Git Bash or WSL, and
+there are only a couple of Windows-specific rules so far. That is the
+part of the library that needs the most help.
 
 ## Contributing
 
