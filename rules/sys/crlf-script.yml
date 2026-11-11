@@ -1,0 +1,16 @@
+title: This script has Windows line endings
+match:
+  - '\^M: bad interpreter'
+why: |
+  The first line says #!/bin/bash, but it ends with an invisible carriage
+  return, so Linux goes looking for a program literally called
+  "bash\r". The file was saved on Windows, or git converted it on
+  checkout (core.autocrlf).
+fix:
+  - run: sed -i 's/\r$//' script.sh
+    note: strip them (or dos2unix script.sh)
+  - run: echo '*.sh text eol=lf' >> .gitattributes
+    note: stop git from doing it again
+examples:
+  - |
+    bash: ./deploy.sh: /bin/bash^M: bad interpreter: No such file or directory

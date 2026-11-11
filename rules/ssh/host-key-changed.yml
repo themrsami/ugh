@@ -1,0 +1,23 @@
+title: "{{host}} isn't presenting the key you saw last time"
+match:
+  - 'WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!'
+  - 'Host key for (?P<host>\S+) has changed'
+why: |
+  ssh remembers every server's key and this one changed. If you know why
+  (server rebuilt, IP reassigned to a new VM, new container on the same
+  port) forget the old key and reconnect. If you have no idea why, stop
+  and find out. This is exactly what an interception looks like.
+fix:
+  - run: ssh-keygen -R {{host}}
+    note: forget the old key
+examples:
+  - |
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+    Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+    It is also possible that a host key has just been changed.
+    Offending ECDSA key in /home/sam/.ssh/known_hosts:14
+    Host key for 203.0.113.7 has changed and you have requested strict checking.
+    Host key verification failed.

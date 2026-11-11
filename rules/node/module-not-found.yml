@@ -1,0 +1,22 @@
+title: "Node can't find '{{module}}'"
+match:
+  - "Error: Cannot find module '(?P<module>[^']+)'"
+why: |
+  If {{module}} is a package: it isn't in node_modules, so either you
+  haven't installed dependencies since pulling or it was never added to
+  package.json. If it's a path (starts with . or /): the file isn't where
+  the require says, and watch for case, since Linux cares and macOS doesn't.
+fix:
+  - run: npm install
+    note: after a fresh clone or pull
+  - run: npm install {{module}}
+    note: if it's genuinely missing from package.json
+examples:
+  - |
+    node:internal/modules/cjs/loader:1080
+      throw err;
+      ^
+
+    Error: Cannot find module 'express'
+    Require stack:
+    - /home/sam/api/server.js

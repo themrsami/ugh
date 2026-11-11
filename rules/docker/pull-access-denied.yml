@@ -1,0 +1,16 @@
+title: "Docker can't pull {{image}}"
+match:
+  - "pull access denied for (?P<image>\\S+), repository does not exist or may require 'docker login'"
+why: |
+  The registry answers the same way for "doesn't exist" and "private and
+  you're not logged in", so check both. A typo in the image name is the
+  most common cause. So is forgetting the registry prefix (ghcr.io/...,
+  an ECR host) which makes Docker look on Docker Hub. And if {{image}} is
+  an image you build locally, you haven't built it yet.
+fix:
+  - run: docker login
+  - run: docker images | grep {{image}}
+    note: is it a local image you forgot to build?
+examples:
+  - |
+    Error response from daemon: pull access denied for acme/api, repository does not exist or may require 'docker login': denied: requested access to the resource is denied

@@ -1,0 +1,22 @@
+title: Old webpack meets new OpenSSL
+match:
+  - 'error:0308010C:digital envelope routines::unsupported'
+why: |
+  Node 17+ ships OpenSSL 3, which removed the MD4 hash that webpack 4
+  (and anything built on it, like old react-scripts and vue-cli) uses for
+  file hashing. The real fix is upgrading the build tool. The flag below
+  is the get-me-unstuck fix.
+fix:
+  - run: export NODE_OPTIONS=--openssl-legacy-provider
+    note: unblocks you now
+  - run: npm install react-scripts@latest
+    note: actual fix, if this is create-react-app
+examples:
+  - |
+    Error: error:0308010C:digital envelope routines::unsupported
+        at new Hash (node:internal/crypto/hash:71:19)
+        at Object.createHash (node:crypto:133:10)
+      opensslErrorStack: [ 'error:03000086:digital envelope routines::initialization error' ],
+      library: 'digital envelope routines',
+      reason: 'unsupported',
+      code: 'ERR_OSSL_EVP_UNSUPPORTED'

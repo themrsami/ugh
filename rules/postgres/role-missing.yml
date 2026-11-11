@@ -1,0 +1,16 @@
+title: "Postgres has no user called {{role}}"
+match:
+  - 'FATAL:\s+role "(?P<role>[^"]+)" does not exist'
+why: |
+  With no -U flag, psql logs in as your operating system username, and
+  the database has no role by that name. On Homebrew installs the
+  reverse happens: tutorials say "postgres" but the superuser is named
+  after you.
+fix:
+  - run: psql -U postgres
+    note: Linux packages create this one
+  - run: createuser -s {{role}}
+    note: or create the missing role (run as a superuser)
+examples:
+  - |
+    psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "sam" does not exist

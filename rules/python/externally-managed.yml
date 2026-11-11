@@ -1,0 +1,23 @@
+title: Your OS doesn't want pip touching the system Python
+match:
+  - 'error: externally-managed-environment'
+why: |
+  Debian, Ubuntu, Fedora and Homebrew now mark their Python as off limits
+  to pip (PEP 668), because pip overwriting apt's packages used to break
+  system tools. Use a virtual environment for projects and pipx for
+  command line tools.
+fix:
+  - run: python3 -m venv .venv && source .venv/bin/activate
+    note: for a project
+  - run: pipx install <tool>
+    note: for a CLI you want everywhere
+  - run: pip install --break-system-packages <pkg>
+    note: the name is the warning
+examples:
+  - |
+    error: externally-managed-environment
+
+    × This environment is externally managed
+    ╰─> To install Python packages system-wide, try apt install
+        python3-xyz, where xyz is the package you are trying to
+        install.

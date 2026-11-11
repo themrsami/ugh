@@ -1,0 +1,15 @@
+title: You're not inside a git repository
+match:
+  - 'fatal: not a git repository'
+why: |
+  git looked in this folder and every folder above it and found no .git.
+  Nine times out of ten you're one directory too high (or in a fresh
+  terminal tab that opened in your home folder).
+fix:
+  - run: pwd
+    note: check where you actually are
+  - run: git init
+    note: only if this really should be a new repo
+examples:
+  - |
+    fatal: not a git repository (or any of the parent directories): .git

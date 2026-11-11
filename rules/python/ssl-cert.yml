@@ -1,0 +1,18 @@
+title: Python can't verify the server's TLS certificate
+match:
+  - 'CERTIFICATE_VERIFY_FAILED'
+why: |
+  Python has no root certificates it trusts for this connection. Common
+  causes, most likely first: the python.org installer on macOS (it ships
+  without certs until you run a bundled script), a corporate proxy that
+  re-signs traffic with its own CA, or a server with a broken chain.
+  Don't "fix" it with verify=False.
+fix:
+  - run: open "/Applications/Python 3.12/Install Certificates.command"
+    note: macOS with python.org installer, adjust the version
+  - run: python -m pip install --upgrade certifi
+  - run: export SSL_CERT_FILE=/path/to/corp-ca.pem
+    note: behind a corporate proxy
+examples:
+  - |
+    urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)>

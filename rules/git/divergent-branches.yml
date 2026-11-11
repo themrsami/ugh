@@ -1,0 +1,23 @@
+title: git wants you to choose between merge and rebase
+match:
+  - 'Need to specify how to reconcile divergent branches'
+why: |
+  You and the remote both have new commits. Newer versions of git refuse
+  to guess how to combine them, so `git pull` stops until you pick a
+  default. You only have to do this once.
+fix:
+  - run: git config --global pull.rebase true
+    note: linear history, what most people want
+  - run: git config --global pull.rebase false
+    note: or classic merge commits
+  - run: git pull
+examples:
+  - |
+    hint: You have divergent branches and need to specify how to reconcile them.
+    hint: You can do so by running one of the following commands sometime before
+    hint: your next pull:
+    hint:
+    hint:   git config pull.rebase false  # merge
+    hint:   git config pull.rebase true   # rebase
+    hint:   git config pull.ff only       # fast-forward only
+    fatal: Need to specify how to reconcile divergent branches.

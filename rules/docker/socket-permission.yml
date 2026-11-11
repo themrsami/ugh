@@ -1,0 +1,15 @@
+title: Your user isn't allowed to talk to Docker
+match:
+  - 'permission denied while trying to connect to the Docker daemon socket'
+why: |
+  Docker is running, but its socket belongs to root and the docker group,
+  and you're in neither. Add yourself to the group. Group changes only
+  apply to new logins, which is why it "still doesn't work" right after.
+  Worth knowing: being in the docker group is equivalent to having root.
+fix:
+  - run: sudo usermod -aG docker $USER
+  - run: newgrp docker
+    note: or log out and back in
+examples:
+  - |
+    permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/containers/json": dial unix /var/run/docker.sock: connect: permission denied

@@ -1,0 +1,15 @@
+title: "{{pkg}} isn't in go.mod"
+match:
+  - 'no required module provides package (?P<pkg>[^\s;]+)'
+why: |
+  You import {{pkg}} but the module that contains it was never added to
+  this project. If it's one of your own packages, the import path
+  doesn't start with the module name from the first line of go.mod.
+fix:
+  - run: go get {{pkg}}
+  - run: head -1 go.mod
+    note: if it's your own package, imports must start with this
+examples:
+  - |
+    main.go:5:2: no required module provides package github.com/go-chi/chi/v5; to add it:
+    	go get github.com/go-chi/chi/v5

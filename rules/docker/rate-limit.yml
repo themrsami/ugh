@@ -1,0 +1,15 @@
+title: Docker Hub rate-limited you
+match:
+  - 'toomanyrequests: You have reached your (unauthenticated )?pull rate limit'
+why: |
+  Docker Hub caps anonymous pulls per IP address. On office networks and
+  CI runners you share that IP with a lot of other people, so the limit
+  can be gone before you pull anything. Logging in, even with a free
+  account, gives you your own quota.
+fix:
+  - run: docker login
+see:
+  - https://docs.docker.com/docker-hub/usage/
+examples:
+  - |
+    Error response from daemon: toomanyrequests: You have reached your pull rate limit. You may increase the limit by authenticating and upgrading: https://www.docker.com/increase-rate-limit

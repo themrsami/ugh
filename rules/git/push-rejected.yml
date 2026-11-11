@@ -1,0 +1,27 @@
+title: The remote has commits you don't have
+cmd: '^git\b'
+match:
+  - '! \[rejected\]\s+\S+ -> (?P<branch>\S+) \((non-fast-forward|fetch first)\)'
+why: |
+  Someone (possibly you, from another machine) pushed to {{branch}} after
+  your last pull. git won't overwrite their work, so it refuses the push.
+  Bring their commits in first, then push again.
+fix:
+  - run: git pull --rebase
+    note: replay your commits on top of theirs
+  - run: git push
+  - run: git push --force-with-lease
+    note: only if you rewrote history on purpose and it's your branch
+examples:
+  - |
+    To github.com:acme/api.git
+     ! [rejected]        main -> main (fetch first)
+    error: failed to push some refs to 'github.com:acme/api.git'
+    hint: Updates were rejected because the remote contains work that you do not
+    hint: have locally. This is usually caused by another repository pushing to
+    hint: the same ref.
+  - |
+    To github.com:acme/api.git
+     ! [rejected]        fix-login -> fix-login (non-fast-forward)
+    error: failed to push some refs to 'github.com:acme/api.git'
+    hint: Updates were rejected because the tip of your current branch is behind

@@ -1,0 +1,20 @@
+title: "{{file}} is too big for GitHub"
+match:
+  - "remote: error: File (?P<file>.+?) is (?P<size>[\\d.]+ MB); this exceeds GitHub's file size limit"
+why: |
+  GitHub rejects any file over 100 MB, and {{file}} is {{size}}. Deleting
+  it in a new commit doesn't help: it's still in your history, and history
+  is what gets pushed. It has to come out of the commits themselves.
+fix:
+  - run: git rm --cached '{{file}}' && git commit --amend --no-edit
+    note: if it was added in your latest commit
+  - run: git filter-repo --invert-paths --path '{{file}}'
+    note: if it's further back (needs git-filter-repo)
+  - run: git lfs track '{{file}}'
+    note: if the file genuinely belongs in the repo
+examples:
+  - |
+    remote: error: Trace: 8f7d0b0a6c1e
+    remote: error: See https://gh.io/lfs for more information.
+    remote: error: File data/dump.sql is 153.20 MB; this exceeds GitHub's file size limit of 100.00 MB
+    remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-lfs.github.com.

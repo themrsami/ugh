@@ -1,0 +1,21 @@
+title: "Node can't find the package '{{pkg}}'"
+match:
+  - "ERR_MODULE_NOT_FOUND\\]: Cannot find package '(?P<pkg>[^']+)'"
+why: |
+  An import asks for {{pkg}} and it isn't in node_modules. Either
+  dependencies haven't been installed since the last pull, or the
+  package was never added to package.json and only worked on someone
+  else's machine because they had it lying around.
+fix:
+  - run: npm install
+    note: after a fresh clone or pull
+  - run: npm install {{pkg}}
+    note: if it's missing from package.json
+examples:
+  - |
+    node:internal/modules/package_json_reader:314
+      throw new ERR_MODULE_NOT_FOUND(packageName, fileURLToPath(base), null);
+            ^
+
+    Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'y' imported from /home/sam/app/a.js
+        at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)

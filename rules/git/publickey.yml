@@ -1,0 +1,22 @@
+title: "{{host}} doesn't recognise your SSH key"
+match:
+  - 'git@(?P<host>[\w.-]+): Permission denied \(publickey\)'
+why: |
+  Either you have no SSH key, the key isn't loaded into your agent, or
+  its public half was never added to your account on {{host}}.
+fix:
+  - run: ssh -T git@{{host}}
+    note: test it without git in the way
+  - run: ssh-add -l
+    note: is any key loaded at all?
+  - run: cat ~/.ssh/id_ed25519.pub
+    note: this is what goes into your account's SSH keys page
+see:
+  - https://docs.github.com/en/authentication/troubleshooting-ssh/error-permission-denied-publickey
+examples:
+  - |
+    git@github.com: Permission denied (publickey).
+    fatal: Could not read from remote repository.
+
+    Please make sure you have the correct access rights
+    and the repository exists.

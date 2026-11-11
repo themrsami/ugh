@@ -1,0 +1,15 @@
+title: "{{user}} isn't allowed to use sudo"
+match:
+  - '(?P<user>\S+) is not in the sudoers file'
+why: |
+  Your account has no admin rights on this machine. Someone who does
+  (or root itself) has to add you to the admin group. It's called sudo
+  on Debian and Ubuntu, wheel on Fedora, RHEL and Arch.
+fix:
+  - run: su -
+    note: become root, if you know root's password
+  - run: usermod -aG sudo {{user}}
+    note: as root, then log out and in again
+examples:
+  - |
+    sam is not in the sudoers file.  This incident will be reported.

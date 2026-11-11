@@ -1,0 +1,16 @@
+title: "A container named {{name}} already exists"
+match:
+  - 'The container name "/(?P<name>[^"]+)" is already in use'
+why: |
+  Stopped containers keep their name until they're removed, so the old
+  {{name}} from your last run is still there, just not running. Remove
+  it, or start it again instead of creating a new one.
+fix:
+  - run: docker rm -f {{name}}
+  - run: docker start {{name}}
+    note: or reuse the old one
+  - run: docker run --rm ...
+    note: next time, so it cleans up after itself
+examples:
+  - |
+    docker: Error response from daemon: Conflict. The container name "/web" is already in use by container "8a3f2e5d1c7b9f04e6a1d2c3b4a5968778695a4b3c2d1e0f9a8b7c6d5e4f3a2b". You have to remove (or rename) that container to be able to reuse that name.

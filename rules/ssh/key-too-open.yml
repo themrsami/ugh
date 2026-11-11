@@ -1,0 +1,17 @@
+title: Your private key is readable by other users
+match:
+  - "Permissions (?P<mode>\\d+) for '(?P<key>[^']+)' are too open"
+why: |
+  ssh refuses to use a private key that anyone else on the machine could
+  read. {{key}} has mode {{mode}}. This happens after copying keys from
+  another machine, a backup, or a Windows drive.
+fix:
+  - run: chmod 600 '{{key}}'
+examples:
+  - |
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    @         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    Permissions 0644 for '/home/sam/.ssh/id_ed25519' are too open.
+    It is required that your private key files are NOT accessible by others.
+    This private key will be ignored.

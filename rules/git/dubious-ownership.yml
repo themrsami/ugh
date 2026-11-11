@@ -1,0 +1,18 @@
+title: This repo's folder belongs to a different user
+match:
+  - "fatal: detected dubious ownership in repository at '(?P<path>[^']+)'"
+why: |
+  The files are owned by someone other than the user running git: root
+  from a `sudo git clone`, a Docker volume, a mounted drive. git refuses
+  to trust it since 2.35.2 because a repo's config can run commands.
+fix:
+  - run: git config --global --add safe.directory {{path}}
+    note: if you know the repo is fine
+  - run: sudo chown -R $(id -u):$(id -g) {{path}}
+    note: or just take the files back
+examples:
+  - |
+    fatal: detected dubious ownership in repository at '/workspace/app'
+    To add an exception for this directory, call:
+
+    	git config --global --add safe.directory /workspace/app

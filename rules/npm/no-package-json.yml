@@ -1,0 +1,26 @@
+title: There's no package.json in this folder
+match:
+  - "npm (ERR!|error) enoent.*open '(?P<path>[^']*package\\.json)'"
+why: |
+  npm looked for {{path}} and it isn't there. You're almost certainly in
+  the wrong directory: one level above the project, or in a subfolder.
+fix:
+  - run: ls
+    note: find the folder that has package.json, cd into it
+  - run: npm init -y
+    note: only if you meant to start a new project here
+examples:
+  - |
+    npm ERR! code ENOENT
+    npm ERR! syscall open
+    npm ERR! path /home/sam/package.json
+    npm ERR! errno -2
+    npm ERR! enoent ENOENT: no such file or directory, open '/home/sam/package.json'
+    npm ERR! enoent This is related to npm not being able to find a file.
+  - |
+    npm error code ENOENT
+    npm error syscall open
+    npm error path /home/sam/package.json
+    npm error errno -2
+    npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/home/sam/package.json'
+    npm error enoent This is related to npm not being able to find a file.

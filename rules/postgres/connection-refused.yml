@@ -1,0 +1,18 @@
+title: "Postgres isn't answering on {{host}}:{{port}}"
+match:
+  - 'connection to server at "(?P<host>[^"]+)"(?: \([^)]*\))?, port (?P<port>\d+) failed: Connection refused'
+why: |
+  Nothing is listening there. Either Postgres isn't running, or it's
+  running on another port, or (inside Docker) "localhost" means the
+  container itself and not the database: use the service name from your
+  compose file instead.
+fix:
+  - run: pg_isready -h {{host}} -p {{port}}
+  - run: sudo systemctl start postgresql
+    note: Linux
+  - run: brew services start postgresql
+    note: macOS with Homebrew
+examples:
+  - |
+    psql: error: connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+    	Is the server running on that host and accepting TCP/IP connections?

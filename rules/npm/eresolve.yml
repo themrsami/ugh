@@ -1,0 +1,29 @@
+title: Two packages disagree about a shared dependency
+cmd: '^(npm|npx)\b'
+match:
+  - 'npm (ERR!|error) code ERESOLVE'
+why: |
+  A package you're installing declares a peer dependency on a version
+  range that doesn't include what you already have. Read the "Found:" and
+  "Could not resolve" lines above: they name both sides. The honest fix
+  is aligning versions. The flag just tells npm to stop checking.
+fix:
+  - run: npm install --legacy-peer-deps
+    note: install anyway, usually fine, sometimes not
+  - run: npm ls <package-from-the-error>
+    note: see who is pulling in what
+examples:
+  - |
+    npm ERR! code ERESOLVE
+    npm ERR! ERESOLVE unable to resolve dependency tree
+    npm ERR!
+    npm ERR! While resolving: shop@0.1.0
+    npm ERR! Found: react@18.2.0
+    npm ERR! node_modules/react
+    npm ERR!   react@"^18.2.0" from the root project
+    npm ERR!
+    npm ERR! Could not resolve dependency:
+    npm ERR! peer react@"^16.8.0 || ^17.0.0" from react-sortable-hoc@2.0.0
+  - |
+    npm error code ERESOLVE
+    npm error ERESOLVE could not resolve

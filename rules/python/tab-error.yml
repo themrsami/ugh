@@ -1,0 +1,17 @@
+title: Tabs and spaces are mixed in the same block
+match:
+  - 'TabError: inconsistent use of tabs and spaces in indentation'
+why: |
+  Some lines in this block are indented with tabs, others with spaces.
+  They can look identical in your editor and Python 3 refuses to guess.
+  Usually it comes from pasting code or from two people's editor settings.
+fix:
+  - run: grep -nP '^\t' yourfile.py
+    note: shows the lines that start with a tab
+  - run: expand -t 4 yourfile.py > fixed.py
+    note: converts tabs to 4 spaces
+examples:
+  - |2
+      File "/home/sam/app/main.py", line 14
+        return total
+    TabError: inconsistent use of tabs and spaces in indentation

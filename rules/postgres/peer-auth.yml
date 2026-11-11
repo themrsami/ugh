@@ -1,0 +1,15 @@
+title: "Postgres wants you to be the OS user {{user}}"
+match:
+  - 'FATAL:\s+Peer authentication failed for user "(?P<user>[^"]+)"'
+why: |
+  Over the local socket, Postgres on Linux defaults to "peer" auth: no
+  password, you just have to be logged in to the OS under the same name
+  as the database user. You're not. Either become that user, or connect
+  over TCP (-h localhost), where password auth applies.
+fix:
+  - run: sudo -u {{user}} psql
+  - run: psql -h localhost -U {{user}}
+    note: password auth instead
+examples:
+  - |
+    psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  Peer authentication failed for user "postgres"

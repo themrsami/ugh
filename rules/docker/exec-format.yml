@@ -1,0 +1,18 @@
+title: This image was built for a different CPU
+match:
+  - 'exec (?P<bin>\S+): exec format error|exec user process caused[: "]+exec format error'
+why: |
+  The binary inside the container is for another architecture, typically
+  an image built on an Apple Silicon Mac (arm64) and deployed to a normal
+  server (amd64), or the reverse. Less often: a script used as entrypoint
+  with no #! line at the top.
+fix:
+  - run: docker buildx build --platform linux/amd64 -t <image> .
+    note: build for where it will run
+  - run: docker image inspect <image> --format '{{.Os}}/{{.Architecture}}'
+    note: see what you've got
+examples:
+  - |
+    exec /usr/local/bin/api: exec format error
+  - |
+    standard_init_linux.go:228: exec user process caused: exec format error

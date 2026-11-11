@@ -1,0 +1,15 @@
+title: These two repos don't share a single commit
+match:
+  - 'fatal: refusing to merge unrelated histories'
+why: |
+  The classic way to get here: you ran `git init` locally, created a repo
+  on GitHub with a README or licence ticked, and now the two have
+  completely separate first commits.
+fix:
+  - run: git pull origin main --allow-unrelated-histories
+    note: glue them together (swap main for your branch)
+examples:
+  - |
+    From github.com:acme/api
+     * branch            main       -> FETCH_HEAD
+    fatal: refusing to merge unrelated histories

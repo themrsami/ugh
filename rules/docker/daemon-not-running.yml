@@ -1,0 +1,15 @@
+title: Docker isn't running
+match:
+  - 'Cannot connect to the Docker daemon at (?P<sock>\S+)\. Is the docker daemon running\?'
+why: |
+  The docker command is only a client. It talks to a background daemon
+  through {{sock}} and nobody is answering. On Mac and Windows that means
+  Docker Desktop isn't open. On Linux the service is stopped.
+fix:
+  - run: open -a Docker
+    note: macOS
+  - run: sudo systemctl start docker
+    note: Linux
+examples:
+  - |
+    Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?

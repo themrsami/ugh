@@ -1,0 +1,17 @@
+title: "The Makefile has no target called {{target}}"
+match:
+  - "make(?:\\[\\d+\\])?: \\*\\*\\* No rule to make target '(?P<target>[^']+)'"
+why: |
+  If you typed {{target}} yourself, this Makefile simply doesn't define
+  it; projects disagree on names (test vs check, run vs start). If you
+  didn't type it and the message goes on with "needed by", then
+  {{target}} is a file some other target depends on, and that file is
+  missing or misspelled.
+fix:
+  - run: grep -E '^[a-zA-Z0-9_.-]+:' Makefile
+    note: the targets that do exist
+examples:
+  - |
+    make: *** No rule to make target 'test'.  Stop.
+  - |
+    make: *** No rule to make target 'src/config.h', needed by 'main.o'.  Stop.

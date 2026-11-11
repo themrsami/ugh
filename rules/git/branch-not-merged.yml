@@ -1,0 +1,20 @@
+title: "Deleting {{branch}} would lose commits"
+match:
+  - "error: [Tt]he branch '(?P<branch>[^']+)' is not fully merged"
+why: |
+  {{branch}} has commits that aren't in the branch you're on right now,
+  and -d is the safe delete that refuses to drop them. A common false
+  alarm: the branch was squash-merged on GitHub, so its changes are in
+  main but its actual commits aren't, and git can't tell.
+fix:
+  - run: git log --oneline HEAD..{{branch}}
+    note: the commits you'd lose
+  - run: git branch -D {{branch}}
+    note: delete anyway, once you've looked
+examples:
+  - |
+    error: the branch 'other' is not fully merged.
+    If you are sure you want to delete it, run 'git branch -D other'
+  - |
+    error: The branch 'fix-login' is not fully merged.
+    If you are sure you want to delete it, run 'git branch -D fix-login'.

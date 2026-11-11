@@ -1,0 +1,20 @@
+title: "There's no '{{name}}' on your PATH"
+match:
+  - '(?:^|: )(?P<name>[\w.+-]+): command not found|command not found: (?P<name_2>[\w.+-]+)|exec: "(?P<name_3>[^"]+)": executable file not found in \$PATH'
+why: |
+  Three possibilities: it's a typo, it isn't installed, or it is installed
+  but in a folder your shell doesn't search. The last one bites right
+  after installing something, because the installer edited your shell
+  config and this terminal hasn't re-read it yet.
+fix:
+  - run: echo $PATH | tr ':' '\n'
+    note: where your shell looks
+  - run: exec $SHELL -l
+    note: reload the shell if you just installed it
+examples:
+  - |
+    bash: kubectl: command not found
+  - |
+    zsh: command not found: pnpm
+  - |
+    ugh: exec: "terraform": executable file not found in $PATH

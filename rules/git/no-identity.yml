@@ -1,0 +1,22 @@
+title: git doesn't know who you are
+match:
+  - 'Author identity unknown|fatal: unable to auto-detect email address|Please tell me who you are'
+why: |
+  Every commit is stamped with a name and email, and this machine has
+  neither configured. Fresh laptop, fresh container, fresh CI runner.
+fix:
+  - run: git config --global user.name "Your Name"
+  - run: git config --global user.email you@example.com
+examples:
+  - |
+    Author identity unknown
+
+    *** Please tell me who you are.
+
+    Run
+
+      git config --global user.email "you@example.com"
+      git config --global user.name "Your Name"
+
+    to set your account's default identity.
+    fatal: unable to auto-detect email address (got 'root@4f2a1c.(none)')

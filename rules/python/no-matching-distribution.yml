@@ -1,0 +1,18 @@
+title: "pip can't find a build of {{pkg}} for your setup"
+match:
+  - 'ERROR: No matching distribution found for (?P<pkg>\S+)'
+why: |
+  If the "from versions:" list above is empty: the name is wrong, or the
+  package has no release for your Python version or platform at all
+  (brand-new Python releases and ARM machines hit this a lot). If the
+  list has versions but not yours: the version you pinned doesn't exist
+  or needs a different Python.
+fix:
+  - run: python --version
+    note: then compare with the package's page on pypi.org
+  - run: python -m pip install --upgrade pip
+    note: old pip can't see newer wheel formats
+examples:
+  - |
+    ERROR: Could not find a version that satisfies the requirement tensorflow==2.9.0 (from versions: 2.16.1, 2.16.2, 2.17.0)
+    ERROR: No matching distribution found for tensorflow==2.9.0

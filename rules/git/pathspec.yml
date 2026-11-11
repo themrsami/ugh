@@ -1,0 +1,14 @@
+title: "git has never heard of '{{name}}'"
+match:
+  - "error: pathspec '(?P<name>[^']+)' did not match any file\\(s\\) known to git"
+why: |
+  If {{name}} is a branch: it exists on the remote but you haven't fetched
+  it, or it's spelled differently. If it's a file: it isn't tracked, or
+  the path is relative to somewhere else.
+fix:
+  - run: git fetch --all
+  - run: git branch -a | grep -i {{name}}
+    note: look for the real spelling
+examples:
+  - |
+    error: pathspec 'feature/login' did not match any file(s) known to git

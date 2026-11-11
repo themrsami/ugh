@@ -1,0 +1,16 @@
+title: You're require()-ing a package that is ESM-only
+match:
+  - 'ERR_REQUIRE_ESM'
+why: |
+  The package you're loading dropped CommonJS and ships only ES modules,
+  so require() can't load it on this version of Node. Your options: use
+  import, pin the last CommonJS release of the package, or upgrade Node
+  (22.12+ can require() most ES modules).
+fix:
+  - run: node --version
+  - run: const pkg = await import('the-package')
+    note: works from CommonJS without converting your project
+examples:
+  - |
+    Error [ERR_REQUIRE_ESM]: require() of ES Module /app/node_modules/chalk/source/index.js from /app/cli.js not supported.
+    Instead change the require of index.js in /app/cli.js to a dynamic import() which is available in all CommonJS modules.

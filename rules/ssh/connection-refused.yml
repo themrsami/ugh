@@ -1,0 +1,16 @@
+title: "Nothing is listening for SSH on {{host}}:{{port}}"
+match:
+  - 'ssh: connect to host (?P<host>\S+) port (?P<port>\d+): Connection refused'
+why: |
+  You reached the machine and it actively said no. That's different from
+  a timeout (which means a firewall or the wrong address). So: sshd isn't
+  running there, or it listens on a different port, or the machine is
+  still booting.
+fix:
+  - run: nc -zv {{host}} {{port}}
+    note: confirm from your side
+  - run: sudo systemctl status ssh
+    note: on the server, if you have another way in
+examples:
+  - |
+    ssh: connect to host 203.0.113.7 port 22: Connection refused

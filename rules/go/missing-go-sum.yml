@@ -1,0 +1,13 @@
+title: go.sum is behind go.mod
+match:
+  - 'missing go\.sum entry'
+why: |
+  go.mod lists a dependency whose checksum isn't recorded in go.sum.
+  Happens after editing go.mod by hand, resolving a merge conflict in
+  it, or pulling someone's change that only committed one of the two files.
+fix:
+  - run: go mod tidy
+examples:
+  - |
+    main.go:6:2: missing go.sum entry for module providing package github.com/spf13/cobra (imported by acme/api); to add:
+    	go get acme/api

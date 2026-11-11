@@ -1,0 +1,18 @@
+title: The disk is full
+match:
+  - '[Nn]o space left on device'
+why: |
+  Some filesystem has zero bytes free. It's not always the one you
+  think: /tmp, /var and /boot are often separate and much smaller. And
+  if df shows free space, you may be out of inodes instead (too many
+  tiny files), which gives the same error.
+fix:
+  - run: df -h
+    note: which filesystem is at 100%
+  - run: df -i
+    note: or is it inodes?
+  - run: sudo du -xh / 2>/dev/null | sort -h | tail -20
+    note: what's eating it
+examples:
+  - |
+    cp: error writing '/var/backups/db.sql': No space left on device

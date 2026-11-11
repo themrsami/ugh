@@ -1,0 +1,18 @@
+title: "package.json has no \"{{script}}\" script"
+match:
+  - 'npm (ERR!|error) Missing script: "?(?P<script>[^"\n]+)"?'
+why: |
+  Either the script has a different name in this project (start vs dev vs
+  serve, everyone picks differently) or you're running it from the wrong
+  folder, like the root of a monorepo instead of the package.
+fix:
+  - run: npm run
+    note: lists the scripts that do exist here
+examples:
+  - |
+    npm ERR! Missing script: "dev"
+    npm ERR!
+    npm ERR! To see a list of scripts, run:
+    npm ERR!   npm run
+  - |
+    npm error Missing script: "start"

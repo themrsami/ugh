@@ -1,0 +1,14 @@
+title: kubectl has no cluster to talk to
+match:
+  - 'The connection to the server localhost:8080 was refused'
+why: |
+  localhost:8080 is what kubectl falls back to when it finds no
+  kubeconfig at all. So this isn't a network problem: there's no
+  ~/.kube/config, or KUBECONFIG points somewhere empty, or you're under
+  sudo and looking at root's home instead of yours.
+fix:
+  - run: kubectl config get-contexts
+  - run: echo $KUBECONFIG; ls -l ~/.kube/config
+examples:
+  - |
+    The connection to the server localhost:8080 was refused - did you specify the right host or port?

@@ -1,0 +1,17 @@
+title: Another package manager is already running
+match:
+  - 'Could not get lock (?P<lock>/var/lib/\S+?)\.? '
+why: |
+  Only one apt or dpkg can run at a time. On a freshly booted Ubuntu box
+  the other one is nearly always unattended-upgrades installing security
+  updates in the background. Wait a couple of minutes and it goes away.
+  Don't delete the lock file while a process holds it, that's how
+  package databases get corrupted.
+fix:
+  - run: ps aux | grep -E 'apt|dpkg' | grep -v grep
+    note: see who has it
+examples:
+  - |
+    E: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 2317 (unattended-upgr)
+    N: Be aware that removing the lock file is not a solution and may break your system.
+    E: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), is another process using it?

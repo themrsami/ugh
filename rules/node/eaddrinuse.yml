@@ -1,0 +1,21 @@
+title: "Port {{port}} is already taken"
+match:
+  - 'EADDRINUSE.*?:(?P<port>\d+)\b'
+why: |
+  Something is already listening on {{port}}. Usually it's an earlier copy
+  of this same server, still alive in another tab or orphaned by a crash.
+fix:
+  - run: lsof -i :{{port}}
+    note: who has it
+  - run: kill $(lsof -ti :{{port}})
+    note: evict them
+examples:
+  - |
+    node:events:495
+          throw er; // Unhandled 'error' event
+          ^
+
+    Error: listen EADDRINUSE: address already in use :::3000
+        at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+  - |
+    Error: listen EADDRINUSE: address already in use 127.0.0.1:8080

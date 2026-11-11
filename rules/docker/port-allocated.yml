@@ -1,0 +1,18 @@
+title: "Port {{port}} is already taken on your machine"
+match:
+  - 'Bind for [\d.:]+:(?P<port>\d+) failed: port is already allocated|listen tcp4? [\d.]+:(?P<port_2>\d+): bind: address already in use'
+why: |
+  Another container, or a program running directly on your machine, is
+  already listening on that host port. A locally installed Postgres or
+  Redis is the usual suspect. Stop it, or map the container to a
+  different host port (the left side of -p).
+fix:
+  - run: docker ps --format '{{.Names}}\t{{.Ports}}'
+    note: is it another container?
+  - run: sudo lsof -i -P -n | grep LISTEN
+    note: or something on the host?
+examples:
+  - |
+    docker: Error response from daemon: driver failed programming external connectivity on endpoint pg (3b1f0c): Bind for 0.0.0.0:5432 failed: port is already allocated.
+  - |
+    Error response from daemon: Ports are not available: exposing port TCP 0.0.0.0:6379 -> 0.0.0.0:0: listen tcp 0.0.0.0:6379: bind: address already in use

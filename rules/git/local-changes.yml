@@ -1,0 +1,20 @@
+title: You have uncommitted changes in the way
+match:
+  - 'error: Your local changes to the following files would be overwritten by (?P<op>merge|checkout)'
+why: |
+  The {{op}} wants to touch files you've edited but not committed, and git
+  won't throw your edits away. Park them, do the {{op}}, bring them back.
+fix:
+  - run: git stash
+  - run: git stash pop
+    note: after the {{op}} has gone through
+examples:
+  - |
+    error: Your local changes to the following files would be overwritten by merge:
+    	src/server.js
+    Please commit your changes or stash them before you merge.
+    Aborting
+  - |
+    error: Your local changes to the following files would be overwritten by checkout:
+    	README.md
+    Please commit your changes or stash them before you switch branches.

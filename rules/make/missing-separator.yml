@@ -1,0 +1,13 @@
+title: "Line {{line}} of your Makefile is indented with spaces"
+match:
+  - '(?P<file>[\w./-]+):(?P<line>\d+): \*\*\* missing separator'
+why: |
+  Recipe lines in a Makefile must start with a real tab character.
+  Spaces don't count, however many. Your editor probably converted the
+  tab when you saved or pasted.
+fix:
+  - run: cat -A {{file}} | sed -n '{{line}}p'
+    note: a tab shows up as ^I, if you see none that's the problem
+examples:
+  - |
+    Makefile:3: *** missing separator.  Stop.

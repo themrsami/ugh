@@ -1,0 +1,16 @@
+title: "Branch {{branch}} doesn't exist on the remote yet"
+match:
+  - 'fatal: The current branch (?P<branch>\S+) has no upstream branch'
+why: |
+  This branch only exists on your machine, so a plain `git push` has
+  nowhere to go. Tell git where to push it once and it remembers.
+fix:
+  - run: git push -u origin {{branch}}
+  - run: git config --global push.autoSetupRemote true
+    note: never see this again (git 2.37+)
+examples:
+  - |
+    fatal: The current branch fix-login has no upstream branch.
+    To push the current branch and set the remote as upstream, use
+
+        git push --set-upstream origin fix-login

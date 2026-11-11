@@ -1,0 +1,28 @@
+title: "The shell wasn't allowed to use {{file}}"
+match:
+  - '^(?:\S*/)?(?:-?bash|sh|dash|zsh): (?:line )?(?:\d+: )?(?P<file>\S+): Permission denied$|^zsh(?::\d+)?: permission denied: (?P<file_2>\S+)$|fish: Unknown command\. ''(?P<file_3>[^'']+)'' exists but is not an executable file'
+why: |
+  Two very different things produce this message.
+
+  You tried to run {{file}}: it has no execute bit. Scripts you just
+  created don't, and neither do files out of a zip or off a Windows
+  drive. (If the bit is set and it still fails, the disk is mounted
+  noexec, common for /tmp and USB sticks.)
+
+  You tried to write to {{file}} with > under sudo: the redirect is
+  done by your own shell before sudo even starts, so sudo's rights
+  never apply to it.
+fix:
+  - run: chmod +x {{file}}
+    note: if you were running it
+  - run: echo "..." | sudo tee -a {{file}}
+    note: if you were writing to it, tee does the write as root
+examples:
+  - |
+    bash: line 1: ./deploy.sh: Permission denied
+  - |
+    zsh:1: permission denied: ./deploy.sh
+  - |
+    sh: 1: ./deploy.sh: Permission denied
+  - |
+    fish: Unknown command. './deploy.sh' exists but is not an executable file.

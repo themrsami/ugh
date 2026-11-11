@@ -1,0 +1,26 @@
+title: There are still merge conflicts to resolve
+match:
+  - 'CONFLICT \([^)]+\): Merge conflict in (?P<file>.+)|error: Committing is not possible because you have unmerged files'
+why: |
+  Both sides changed the same lines and git won't pick a winner. The
+  merge is paused, not failed. Open each conflicted file, find the
+  <<<<<<< ======= >>>>>>> markers, keep what should stay, delete the
+  markers, then tell git the file is done with `git add`.
+fix:
+  - run: git status
+    note: files marked "both modified" are the ones that need you
+  - run: git add <file> && git commit
+    note: after fixing each one
+  - run: git merge --abort
+    note: or back out completely and pretend this never happened
+examples:
+  - |
+    Auto-merging f.txt
+    CONFLICT (content): Merge conflict in f.txt
+    Automatic merge failed; fix conflicts and then commit the result.
+  - |
+    error: Committing is not possible because you have unmerged files.
+    hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+    hint: as appropriate to mark resolution and make a commit.
+    fatal: Exiting because of an unresolved conflict.
+    U	f.txt

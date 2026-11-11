@@ -1,0 +1,22 @@
+title: npm's global folder is owned by root
+match:
+  - 'npm (ERR!|error) code EACCES'
+  - '(?P<dir>/usr/(local/)?lib/node_modules)'
+why: |
+  You're installing a global package into {{dir}}, which your user can't
+  write to. Don't reach for sudo: it leaves root-owned files in your npm
+  cache and you'll be fighting permissions for weeks. Point npm's global
+  prefix at your home folder instead, or use a version manager.
+fix:
+  - run: npm config set prefix ~/.npm-global
+  - run: echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.profile
+    note: then open a new terminal
+see:
+  - https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
+examples:
+  - |
+    npm ERR! code EACCES
+    npm ERR! syscall mkdir
+    npm ERR! path /usr/local/lib/node_modules/typescript
+    npm ERR! errno -13
+    npm ERR! Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/typescript'

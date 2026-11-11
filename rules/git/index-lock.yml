@@ -1,0 +1,19 @@
+title: A leftover lock file is blocking git
+match:
+  - "Unable to create '(?P<path>[^']+index\\.lock)': File exists"
+why: |
+  git creates index.lock while it works and removes it when done. If a
+  git process crashed or got killed, the lock stays behind. Make sure no
+  other git (or an editor's git integration) is mid-operation, then
+  delete it.
+fix:
+  - run: pgrep -fl git
+    note: anything still running?
+  - run: rm '{{path}}'
+examples:
+  - |
+    fatal: Unable to create '/home/sam/code/api/.git/index.lock': File exists.
+
+    Another git process seems to be running in this repository, e.g.
+    an editor opened by 'git commit'. Please make sure all processes
+    are terminated then try again.

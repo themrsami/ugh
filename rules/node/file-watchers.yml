@@ -1,0 +1,13 @@
+title: Linux ran out of file watchers
+match:
+  - 'ENOSPC: System limit for number of file watchers reached'
+why: |
+  Nothing to do with disk space, despite ENOSPC. Your dev server wants to
+  watch more files than the kernel's inotify limit allows, and the
+  default is tiny on many distros. node_modules alone can blow through it.
+fix:
+  - run: echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+examples:
+  - |
+    Error: ENOSPC: System limit for number of file watchers reached, watch '/home/sam/app/public'
+        at FSWatcher.<computed> (node:internal/fs/watchers:247:19)

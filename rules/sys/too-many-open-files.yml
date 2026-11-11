@@ -1,0 +1,19 @@
+title: The process hit its open-file limit
+match:
+  - '[Tt]oo many open files|EMFILE'
+why: |
+  Every process gets a cap on open files and sockets, and the default is
+  low: 256 on macOS, 1024 on most Linux. Bundlers, test runners and load
+  tests go past it easily. If a long-running server hits it, though,
+  something is leaking file handles or connections and a higher limit
+  only buys time.
+fix:
+  - run: ulimit -n
+    note: current limit
+  - run: ulimit -n 65536
+    note: raise it for this shell, then re-run
+examples:
+  - |
+    Error: EMFILE: too many open files, open '/home/sam/app/node_modules/lodash/package.json'
+  - |
+    accept tcp [::]:8080: accept4: too many open files

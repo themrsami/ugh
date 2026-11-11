@@ -1,0 +1,17 @@
+title: Node is treating this file as CommonJS
+match:
+  - 'SyntaxError: Cannot use import statement outside a module'
+why: |
+  The file uses `import`, but Node decided it's a CommonJS file, and it
+  decides by extension and package.json, not by reading your code.
+  Tell it the project is ESM, or rename the file to .mjs.
+fix:
+  - run: npm pkg set type=module
+    note: whole project becomes ESM
+examples:
+  - |
+    import express from 'express';
+    ^^^^^^
+
+    SyntaxError: Cannot use import statement outside a module
+        at internalCompileFunction (node:internal/vm:76:18)

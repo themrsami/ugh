@@ -1,0 +1,18 @@
+title: There's no Makefile in this folder
+match:
+  - 'make: \*\*\* No targets specified and no makefile found'
+why: |
+  make only looks in the current directory, for a file called Makefile,
+  makefile or GNUmakefile. You're probably one folder off. If the
+  project uses CMake or autotools, the Makefile doesn't exist until
+  you generate it.
+fix:
+  - run: ls
+    note: is there a Makefile, a CMakeLists.txt or a configure script?
+  - run: ./configure
+    note: autotools projects
+  - run: cmake -B build && cmake --build build
+    note: CMake projects
+examples:
+  - |
+    make: *** No targets specified and no makefile found.  Stop.

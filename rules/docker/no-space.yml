@@ -1,0 +1,17 @@
+title: Docker filled its disk
+cmd: '^docker\b'
+match:
+  - 'no space left on device'
+why: |
+  Old images, stopped containers, dangling build cache and unused volumes
+  pile up quietly until the disk (or Docker Desktop's fixed-size virtual
+  disk) is full. See what's using the space, then prune.
+fix:
+  - run: docker system df
+  - run: docker system prune
+    note: safe-ish, removes stopped containers and dangling stuff
+  - run: docker system prune -a --volumes
+    note: removes everything unused, including volumes with data
+examples:
+  - |
+    failed to register layer: write /usr/lib/x86_64-linux-gnu/libLLVM-15.so.1: no space left on device
