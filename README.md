@@ -7,7 +7,7 @@
 A command failed. Type `ugh`. It explains the error message in plain
 English and shows the commands people normally use to fix it.
 
-![ugh explaining a failed git push in the terminal](docs/demo.png)
+![ugh explaining a failed git command in the terminal](docs/demo.gif)
 
 It works for the errors you keep running into with git, npm, Node,
 Python, pip, Docker, ssh, Postgres, make, curl and the shell itself. It's

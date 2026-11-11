@@ -71,3 +71,12 @@ func defaultRulesDir() string {
 	}
 	return filepath.Join(dir, "ugh", "rules")
 }
+
+// Only a real console answers GetConsoleMode. File modes can't be trusted
+// here: NUL and the console both report as character devices and Go can't
+// tell them apart.
+func isTerminal(f *os.File) bool {
+	var mode uint32
+	r, _, _ := syscall.NewLazyDLL("kernel32.dll").NewProc("GetConsoleMode").Call(f.Fd(), uintptr(unsafe.Pointer(&mode)))
+	return r != 0
+}
