@@ -1,0 +1,21 @@
+title: "Windows can't find a program called {{name}}"
+match:
+  - "'(?P<name>[^']+)' is not recognized as an internal or external command|The term '(?P<name_2>[^']+)' is not recognized as (?:the name of a cmdlet|a name of a cmdlet)"
+why: |
+  Either {{name}} isn't installed, or it is and its folder isn't on your
+  PATH. The second one catches everybody right after an install: Windows
+  only hands the new PATH to terminals opened afterwards, so the window
+  you ran the installer from still has the old one. Close it and open a
+  new one (and restart VS Code completely if you're in its terminal).
+fix:
+  - run: where.exe {{name}}
+    note: prints the location if Windows can find it at all
+  - run: $env:Path -split ';'
+    note: PowerShell, the folders that get searched
+examples:
+  - |
+    'node' is not recognized as an internal or external command,
+    operable program or batch file.
+  - |
+    git : The term 'git' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the
+    spelling of the name, or if a path was included, verify that the path is correct and try again.

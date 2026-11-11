@@ -1,0 +1,19 @@
+title: PowerShell is blocking a script from running
+match:
+  - '(?P<script>\S+\.ps1) cannot be loaded because running scripts is disabled on this system'
+why: |
+  Out of the box, Windows PowerShell refuses to run any .ps1 file, and
+  tools like npm, yarn and Python's venv install their commands as .ps1
+  files. So the tool is fine, your policy is just the default one.
+  RemoteSigned for your own user is the usual setting: local scripts
+  run, downloaded ones need a signature. It doesn't need admin rights.
+fix:
+  - run: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+  - run: Get-ExecutionPolicy -List
+    note: what's in effect now
+see:
+  - https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies
+examples:
+  - |
+    npm : File C:\Program Files\nodejs\npm.ps1 cannot be loaded because running scripts is disabled on this system. For
+    more information, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.

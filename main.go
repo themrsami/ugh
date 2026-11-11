@@ -27,7 +27,7 @@ const usage = `ugh - explains the error you just got
   ugh --list [prefix]    list rules
   ugh --new <tool/name>  start a new rule from the last error ugh didn't know
   ugh --check [dir]      test rules against their own examples
-  ugh --init <shell>     print the shell hook for bash, zsh or fish
+  ugh --init <shell>     print the shell hook: bash, zsh, fish or powershell
   ugh --all ...          show every matching rule, not just the best one
 
 Rules are plain YAML. Your own go in ` + "`ugh --dir`" + ` and win over the built-ins.
@@ -70,15 +70,16 @@ func realMain(args []string) int {
 	case "--new":
 		return newRule(args[1:])
 	case "-c":
-		if len(args) != 2 {
+		// The PowerShell hook passes the command in the environment,
+		// because PowerShell mangles quotes in arguments to programs.
+		line := os.Getenv("UGH_CMD")
+		if len(args) == 2 {
+			line = args[1]
+		} else if len(args) != 1 || line == "" {
 			fmt.Fprintln(os.Stderr, "ugh: -c takes exactly one argument, the command line in quotes")
 			return 2
 		}
-		sh := os.Getenv("SHELL")
-		if sh == "" {
-			sh = "/bin/sh"
-		}
-		return run(exec.Command(sh, "-c", args[1]), args[1], all)
+		return run(shellCommand(line), line, all)
 	case "--":
 		args = args[1:]
 		if len(args) == 0 {
@@ -114,8 +115,7 @@ func userDir() string {
 	if d := os.Getenv("XDG_CONFIG_HOME"); d != "" {
 		return filepath.Join(d, "ugh", "rules")
 	}
-	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".config", "ugh", "rules")
+	return defaultRulesDir()
 }
 
 // tail keeps the end of the output. The error is nearly always in the last

@@ -23,7 +23,15 @@ func (p pen) cyan(s string) string { return p.wrap("36", s) }
 
 func newPen() pen {
 	_, noColor := os.LookupEnv("NO_COLOR")
-	return pen{on: !noColor && os.Getenv("TERM") != "dumb" && isTerminal(os.Stderr)}
+	if noColor || os.Getenv("TERM") == "dumb" {
+		return pen{}
+	}
+	// Git Bash's terminal looks like a pipe to a Windows program, so
+	// there's an override for it. The bash hook sets it when it's safe to.
+	if os.Getenv("UGH_COLOR") == "1" {
+		return pen{on: true}
+	}
+	return pen{on: isTerminal(os.Stderr) && colorCapable(os.Stderr)}
 }
 
 func render(w io.Writer, m rule.Match, others []rule.Match) {

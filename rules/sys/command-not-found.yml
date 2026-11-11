@@ -1,6 +1,6 @@
 title: "There's no '{{name}}' on your PATH"
 match:
-  - '(?:^|: )(?P<name>[\w.+-]+): command not found|command not found: (?P<name_2>[\w.+-]+)|exec: "(?P<name_3>[^"]+)": executable file not found in \$PATH'
+  - '(?:^|: )(?P<name>[\w.+-]+): command not found|command not found: (?P<name_2>[\w.+-]+)|exec: "(?P<name_3>[^"]+)": executable file not found in (?:\$PATH|%PATH%)'
 why: |
   Three possibilities: it's a typo, it isn't installed, or it is installed
   but in a folder your shell doesn't search. The last one bites right
@@ -18,3 +18,5 @@ examples:
     zsh: command not found: pnpm
   - |
     ugh: exec: "terraform": executable file not found in $PATH
+  - |
+    ugh: exec: "terraform": executable file not found in %PATH%

@@ -16,3 +16,18 @@ jobs:
       - run: go vet ./...
       - run: go test ./...
       - run: go run . --check rules
+
+  # the binary has per-OS code for shells and consoles, so run the
+  # end-to-end tests where that code actually executes
+  other-os:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go test ./...

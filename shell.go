@@ -20,7 +20,11 @@ const bashHook = `ugh() {
       return
     fi
     printf '\033[2m$ %s\033[0m\n' "$last" >&2
-    command ugh -c "$last"
+    if [ -t 2 ] && [ -n "$MSYSTEM" ]; then
+      UGH_COLOR=1 command ugh -c "$last"
+    else
+      command ugh -c "$last"
+    fi
   else
     command ugh "$@"
   fi
@@ -60,6 +64,24 @@ const fishHook = `function ugh
 end
 `
 
+// PowerShell rewrites quotes when it passes arguments to a program, so the
+// command travels in an environment variable instead.
+const powershellHook = `function ugh {
+  if ($args.Count -eq 0 -and -not $MyInvocation.ExpectingInput) {
+    $last = (Get-History -Count 1).CommandLine
+    if (-not $last -or $last.Trim() -eq 'ugh') { & ugh.exe; return }
+    Write-Host "> $last" -ForegroundColor DarkGray
+    $env:UGH_SHELL = (Get-Process -Id $PID).Path
+    $env:UGH_CMD = $last
+    try { & ugh.exe -c } finally { Remove-Item Env:UGH_SHELL, Env:UGH_CMD -ErrorAction SilentlyContinue }
+  } elseif ($MyInvocation.ExpectingInput) {
+    $input | & ugh.exe @args
+  } else {
+    & ugh.exe @args
+  }
+}
+`
+
 func initShell(args []string) int {
 	sh := ""
 	if len(args) > 0 {
@@ -74,12 +96,17 @@ func initShell(args []string) int {
 		os.Stdout.WriteString(zshHook)
 	case "fish":
 		os.Stdout.WriteString(fishHook)
+	case "powershell", "pwsh":
+		os.Stdout.WriteString(powershellHook)
 	default:
 		fmt.Fprintf(os.Stderr, `ugh: don't know the shell %q. Pick one:
 
   bash   echo 'eval "$(ugh --init bash)"' >> ~/.bashrc
   zsh    echo 'eval "$(ugh --init zsh)"' >> ~/.zshrc
   fish   echo 'ugh --init fish | source' >> ~/.config/fish/config.fish
+
+  powershell   Add-Content $PROFILE 'ugh.exe --init powershell | Out-String | Invoke-Expression'
+  git bash     same as bash
 `, sh)
 		return 2
 	}
